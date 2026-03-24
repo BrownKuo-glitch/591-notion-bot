@@ -2,9 +2,8 @@ name: 🏠 591 每日買賣物件蒐集
 
 on:
   schedule:
-    # 每天早上 8:00（台灣時間，UTC+8 → UTC 00:00）
     - cron: "0 0 * * *"
-  workflow_dispatch:  # 允許手動觸發（方便測試）
+  workflow_dispatch:
 
 jobs:
   scrape-and-sync:
