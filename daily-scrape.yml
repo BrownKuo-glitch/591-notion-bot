@@ -1,0 +1,35 @@
+name: 🏠 591 每日買賣物件蒐集
+
+on:
+  schedule:
+    # 每天早上 8:00（台灣時間，UTC+8 → UTC 00:00）
+    - cron: "0 0 * * *"
+  workflow_dispatch:  # 允許手動觸發（方便測試）
+
+jobs:
+  scrape-and-sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: ⬇️ Checkout 程式碼
+        uses: actions/checkout@v4
+
+      - name: 🐍 設定 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: 📦 安裝套件
+        run: pip install -r requirements.txt
+
+      - name: 🚀 執行爬蟲並寫入 Notion
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: python scraper.py
+
+      - name: 📋 顯示執行結果
+        if: always()
+        run: echo "執行完成於 $(TZ='Asia/Taipei' date '+%Y-%m-%d %H:%M:%S') 台灣時間"
